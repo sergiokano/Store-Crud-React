@@ -1,0 +1,57 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "age": 28,
+        "address": {
+          "street": "123 Main St",
+          "city": "Springfield",
+          "state": "IL",
+          "zip": "12345"
+        },
+        "phone": "+1234567890"
+      },
+      {
+        "id": 2,
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "age": 32,
+        "address": {
+          "street": "456 Elm St",
+          "city": "Shelbyville",
+          "state": "IL",
+          "zip": "67890"
+        },
+        "phone": "+0987654321"
+      },
+      {
+        "id": 3,
+        "name": "Alice Johnson",
+        "email": "alice.johnson@example.com",
+        "age": 24,
+        "address": {
+          "street": "789 Maple St",
+          "city": "Capital City",
+          "state": "IL",
+          "zip": "11223"
+        },
+        "phone": "+1122334455"
+      },
+      {
+        "id": 4,
+        "name": "Bob Williams",
+        "email": "bob.williams@example.com",
+        "age": 35,
+        "address": {
+          "street": "101 Pine St",
+          "city": "Ogdenville",
+          "state": "IL",
+          "zip": "44556"
+        },
+        "phone": "+5566778899"
+      }
+    ]
+  }
+  export default api;
