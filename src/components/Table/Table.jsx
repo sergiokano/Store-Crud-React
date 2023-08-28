@@ -91,10 +91,8 @@ const Table = () => {
         if (type === "success") {
           document.getElementById("btnClose").click();
           if (operation === 1) {
-            // Si es un nuevo producto
             setProducts((prevProducts) => [...prevProducts, response.data]);
           } else if (operation === 2) {
-            // Si es una edición
             setProducts((prevProducts) => {
               return prevProducts.map((product) =>
                 product.id === response.data.id ? response.data : product
@@ -109,7 +107,40 @@ const Table = () => {
       });
   };
 
-  console.log(products);
+  const deleteProduct = (id, name) => {
+    const MySwal = withReactContent(Swal);
+    MySwal.fire({
+      title: "¿Confirmas que deseas eliminar el producto " + name + "?",
+      icon: "warning",
+      text: "Esta acción no se puede deshacer",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios({
+            method: "DELETE",
+            url: `${url}/products/${id}`,
+          });
+          const deletedProduct = response.data;
+          console.log("products", products);
+          setProducts((prevProducts) => {
+            return prevProducts.filter(
+              (product) => product.id !== deletedProduct.id
+            );
+          });
+
+          show_alerta("Producto eliminado con éxito", "success");
+          console.log("response", response);
+        } catch (error) {
+          show_alerta("Error al eliminar el producto", "error");
+          console.log(error);
+        }
+      }
+    });
+  };
+
   return (
     <div className="app">
       <div className="container-fluid">
@@ -141,7 +172,8 @@ const Table = () => {
                 <tbody className="table-group-divider">
                   {products.map((product, i) => (
                     <tr key={product.id}>
-                      <td>{i + 1}</td>
+                      {/* Aquí tenia puesto un i+1 pero pongo el id para que se vea que se ha borrado mejor */}
+                      <td>{product.id}</td>
                       <td>{product.title}</td>
                       <td>{product.description}</td>
                       <td>
@@ -168,7 +200,12 @@ const Table = () => {
                           <i className="fa-solid fa-edit"></i>
                         </button>
                         &nbsp;
-                        <button className="btn btn-danger">
+                        <button
+                          onClick={() =>
+                            deleteProduct(product.id, product.title)
+                          }
+                          className="btn btn-danger"
+                        >
                           <i className="fa-solid fa-trash"></i>
                         </button>
                       </td>
