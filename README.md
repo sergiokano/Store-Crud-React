@@ -1,8 +1,20 @@
 # Store CRUD React App
 
-Para iniciar la aplicación, ejecuta:
+Para iniciar la aplicación los pasos son los siguientes:
 
-`` npm start ``
+1. Clonar el proyecto
+   ```sh
+   git clone https://github.com/sergiokano/Store-Crud-React
+   ```
+2. Instalar los paquetes npm
+   ```sh
+   npm i
+   ```
+3. Iniciar la app
+
+   ```sh
+    npm start
+   ```
 
 ## Acerca de la App
 
