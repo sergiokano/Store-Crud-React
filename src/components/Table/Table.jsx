@@ -44,11 +44,11 @@ const Table = () => {
   const validate = () => {
     let params;
     let method;
+    let endpoint;
     if (name.trim() === "") {
       show_alerta("Escribe el nombre del producto", "warning");
     } else if (description.trim() === "") {
       show_alerta("Escribe la descripción del producto", "warning");
-    
     } else if (!price || String(price).trim() === "") {
       show_alerta("Escribe el precio del producto", "warning");
     } else {
@@ -57,44 +57,57 @@ const Table = () => {
           title: name.trim(),
           description: description.trim(),
           price: price,
-          image: 'https://i.pravatar.cc',
-          category: 'electronic'
+          image: "https://i.pravatar.cc",
+          category: "electronic",
         };
-        method = "post";
+        method = "POST";
+        endpoint = url + "/products";
       } else if (operation === 2) {
         params = {
           id: id,
           title: name.trim(),
           description: description.trim(),
           price: price,
-          image: 'https://i.pravatar.cc',
-          category: 'electronic'
+          image: "https://i.pravatar.cc",
+          category: "electronic",
         };
-        method = "put";
+        method = "PUT";
+        endpoint = url + "/products/" + id;
       }
-      saveProduct(params, method);
+      saveProduct(params, method, endpoint);
     }
   };
-  const saveProduct = async (params, method) => {
-    try {
-      let response;
-      if (method === "post") {
-          response = await axios.post(url + "/products", params);
-      } else if (method === "put") {
-          response = await axios.put(`${url}/products/${params.id}`, params);
-      }
-
-      if (response.status === 200 || response.status === 201) {
-          console.log("Producto guardado correctamente:", response.data);
-          // Aquí puedes agregar cualquier otra lógica que necesites después de guardar el producto
-      } else {
-          console.error("Error al guardar el producto:", response);
-      }
-  } catch (error) {
-      console.error("Hubo un error al hacer la solicitud:", error);
-  }
-};
-
+  const saveProduct = async (params, method, endpoint) => {
+    await axios({
+      method: method,
+      url: endpoint,
+      data: params,
+    })
+      .then(function (response) {
+        console.log("response", response);
+        const type = response.status === 200 ? "success" : "error";
+        const msj = response.statusText;
+        show_alerta(msj, type);
+        if (type === "success") {
+          document.getElementById("btnClose").click();
+          if (operation === 1) {
+            // Si es un nuevo producto
+            setProducts((prevProducts) => [...prevProducts, response.data]);
+          } else if (operation === 2) {
+            // Si es una edición
+            setProducts((prevProducts) => {
+              return prevProducts.map((product) =>
+                product.id === response.data.id ? response.data : product
+              );
+            });
+          }
+        }
+      })
+      .catch(function (error) {
+        show_alerta("Error al guardar el producto", "error");
+        console.log(error);
+      });
+  };
 
   console.log(products);
   return (
@@ -121,7 +134,7 @@ const Table = () => {
                 <thead>
                   <tr>
                     <th></th>
-                    <th>PRODUCTO</th> <th>DESCRIPCIÓN</th> <th>PRECIO</th>{" "}
+                    <th>PRODUCTO</th> <th>DESCRIPCIÓN</th> <th>PRECIO</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -148,7 +161,9 @@ const Table = () => {
                               product.price
                             )
                           }
-                          className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalProducts"
+                          className="btn btn-warning"
+                          data-bs-toggle="modal"
+                          data-bs-target="#modalProducts"
                         >
                           <i className="fa-solid fa-edit"></i>
                         </button>
@@ -171,6 +186,7 @@ const Table = () => {
             <div className="modal-header">
               <label className="h5">{head}</label>
               <button
+                id="btnClose"
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
