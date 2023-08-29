@@ -5,6 +5,9 @@ import withReactContent from "sweetalert2-react-content";
 import { show_alerta } from "../../functions";
 
 const Table = () => {
+  // Estaría mejor aislar todo lo que corresponda a llamadas a la api en un fichero
+  // FakestoreApi.js por ejemplo.
+  // Para aislar la lógica de la parte visual.
   const url = "https://fakestoreapi.com";
   const [products, setProducts] = useState([]);
   const [id, setId] = useState("");
@@ -19,10 +22,14 @@ const Table = () => {
   }, []);
 
   const getProducts = async () => {
+    // Correcto
     const res = await axios.get(url + "/products");
     setProducts(res.data);
   };
   const openModal = (op, id, title, description, price) => {
+    
+    // Refactorizar en una función:
+    // setModalValues(operation, id, name, description,,,,,)
     setOperation(op);
     setId("");
     setName("");
@@ -78,6 +85,10 @@ const Table = () => {
     }
   };
   const saveProduct = async (params, method, endpoint) => {
+    // 2 modos de tratar promesas
+    // 1 - async () => { const response = await axios({});
+    // 2 - axios({}).then(response => {}).catch()
+    // Aqui remover o el await o el .then.catch
     await axios({
       method: method,
       url: endpoint,
@@ -132,6 +143,7 @@ const Table = () => {
           });
 
           show_alerta("Producto eliminado con éxito", "success");
+          // Como buena práctica siempre remover los console.log
           console.log("response", response);
         } catch (error) {
           show_alerta("Error al eliminar el producto", "error");
